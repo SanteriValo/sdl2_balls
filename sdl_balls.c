@@ -7,6 +7,8 @@
 #define true 1
 #define false 0
 
+int reflect = 0;
+
 typedef struct {
     SDL_Window  *window;
     SDL_Surface *window_surface;
@@ -96,8 +98,8 @@ void update(Application *app, double delta_time)
     app->image_position.y = app->image_y;
 
 // reflect from the wall
-    if (app->image_x > 540 || app->image_x < 0) app->image_v_x *= -1;
-    if (app->image_y > 380 || app->image_y < 0) app->image_v_y *= -1;
+    if (app->image_x > 540 || app->image_x < 0) app->image_v_x *= -1, reflect = 1;
+    if (app->image_y > 380 || app->image_y < 0) app->image_v_y *= -1, reflect = 1;
 }
 
 void draw(Application *app)
@@ -105,6 +107,12 @@ void draw(Application *app)
     SDL_FillRect(app->window_surface, NULL, SDL_MapRGB(app->window_surface->format, 45, 45, 45));
     SDL_BlitSurface(app->image, NULL, app->window_surface, &app->image_position);
     SDL_UpdateWindowSurface(app->window);
+}
+
+void changing_image(Application *app)
+{
+    load_image(app, "eye2.bmp"),
+    reflect = 0;
 }
 
 int main(int argc, char *argv[])
@@ -115,6 +123,8 @@ int main(int argc, char *argv[])
     get_surface(app);
     load_image(app, "eye1.bmp");
     init_coords(app);
+
+    if(reflect==1) changing_image(app);
 
     bool keep_window_open = true;
     while(keep_window_open)
